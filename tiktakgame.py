@@ -1,9 +1,26 @@
 import tkinter as tk
+from tkinter import messagebox
+
+def check_winner():
+    global winner
+    for combo in [
+        [0,1,2], [3,4,5], [6,7,8],  # rows
+        [0,3,6], [1,4,7], [2,5,8],  # columns
+        [0,4,8], [2,4,6]            # diagonals
+    ]:
+        if buttons[combo[0]]["text"] == buttons[combo[1]]["text"] == buttons[combo[2]]["text"] != "":
+            for i in combo:
+                buttons[i].config(bg="green")
+            messagebox.showinfo("Tic-Tac-Toe", f"Player {buttons[combo[0]]['text']} wins!")
+            winner = True
+            return
 
 def button_click(index):
-    if buttons[index]["text"] == "":
+    if buttons[index]["text"] == "" and not winner:
         buttons[index]["text"] = current_player
-        toggle_player()
+        check_winner()
+        if not winner:
+            toggle_player()
 
 def toggle_player():
     global current_player
@@ -24,6 +41,7 @@ for i, button in enumerate(buttons):
 
 # Initialize game state
 current_player = "X"
+winner = False
 
 # Label to show current player
 label = tk.Label(root, text=f"Player {current_player}'s turn", font=("normal", 16))
